@@ -52,6 +52,7 @@ def compute_shortest_paths(gg, s_nodes, t_nodes):
             sp.set(sn_, n, min_value)
     return sp
 
+
 if __name__ == '__main__':
 
     print(grid_graph)

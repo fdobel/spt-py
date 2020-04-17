@@ -1,4 +1,3 @@
-from spt.tree import NodeBuilder
 
 
 def find_leaf(node, leaf_idx):
@@ -25,6 +24,10 @@ def distance_common_ancestor(tree_depth, idx1, idx2):
     return distance_to_common_ancestor
 
 
+def walk_tree(node, leaf_indices):
+    return tree_node_to_node(node, [(node, 'root')], leaf_indices)
+
+
 def tree_node_to_node(node, node_path, leaf_indices):
 
     next_idx = leaf_indices[0]
@@ -34,25 +37,43 @@ def tree_node_to_node(node, node_path, leaf_indices):
     else:
         look_forward = None
 
-    lu = node_path[len(node_path) - 1]
+    lu = node_path[len(node_path) - 1][0]
+
+    # print("------")
+    # print(lu)
+    # print()
 
     if next_idx >= 1 << node.depth:
         raise RuntimeError("leaf (%i) does not exist (depth %i)" % (next_idx, node.depth))
 
     for direction in find_leaf(lu, next_idx):
-        yield direction
+
         if direction == 'left':
+            yield direction, lu.left.weight
             lu = lu.left.child
-            node_path.append(lu)
 
         if direction == 'right':
+            yield direction, lu.right.weight
             lu = lu.right.child
-            node_path.append(lu)
+        node_path.append((lu, direction))
 
     if look_forward is not None:
         dca = distance_common_ancestor(node.depth, next_idx, look_forward)
-        for _ in range(dca):
-            yield "up"
 
-        for t in tree_node_to_node(node, node_path[:-dca], leaf_indices[1:]):
-            yield t
+        for pointer_last_directions in range(dca):
+
+            # print(node_path)
+            last_nodes_pointer = node_path[-1]
+            up_node = node_path[-2][0]
+            # print(last_nodes_pointer)
+
+            if last_nodes_pointer[1] == 'left':
+                weight = up_node.left.weight
+            else:
+                weight = up_node.right.weight
+            yield "up", weight
+            node_path = node_path[:-1]
+            # node_path.append((last_nodes_pointer[0], 'up'))
+
+        for a in tree_node_to_node(node, node_path, leaf_indices[1:]):
+            yield a
