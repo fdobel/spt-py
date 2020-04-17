@@ -32,19 +32,19 @@ def merge_binary_tree_along_path_to_leaf(merge_l: _Node, merge_r: _Node, merge_p
             return merge_l
         return merge_r
 
-    next_mi = merge_path[0]
+    merge_info = merge_path[0]
+    if merge_info.dir == 'left':
 
-    if next_mi.dir == 'left':
         return b.mid(
             merge_binary_tree_along_path_to_leaf(
                 merge_l.left.child,
                 merge_r.left.child,
                 merge_path[1:], pref=pref
             ),
-            merge_r.right.child, lw=42.0, rw=42.0
+            merge_r.right.child, lw=merge_info.lw, rw=merge_info.rw
         )
 
-    if next_mi.dir == 'right':
+    if merge_info.dir == 'right':
         return b.mid(
             merge_l.left.child,
             merge_binary_tree_along_path_to_leaf(
@@ -52,7 +52,7 @@ def merge_binary_tree_along_path_to_leaf(merge_l: _Node, merge_r: _Node, merge_p
                 merge_r.right.child,
                 merge_path[1:], pref=pref
             ),
-            lw=43.0, rw=43.0
+            lw=merge_info.lw, rw=merge_info.rw
         )
     raise RuntimeError()
 

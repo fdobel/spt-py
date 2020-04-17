@@ -24,5 +24,11 @@ class Test(unittest.TestCase):
         result = merge_binary_tree_along_path_to_leaf(self.m1, self.m2, [MergeInfo('left', 1, 1), MergeInfo('right', 1, 1)])
         self.assertEqual(
             str(result),
-            "N:[e(42.0)=>[N:[e(43.0)=>[<0>]]-o-[e(43.0)=>[<1>]]]]-o-[e(42.0)=>[N:[e(0)=>[<x2>]]-o-[e(0)=>[<x3>]]]]"
+            "N:[e(1)=>[N:[e(1)=>[<0>]]-o-[e(1)=>[<1>]]]]-o-[e(1)=>[N:[e(0)=>[<x2>]]-o-[e(0)=>[<x3>]]]]"
+        )
+    def test_case_2_output(self):
+        result = merge_binary_tree_along_path_to_leaf(self.m1, self.m2, [MergeInfo('left', 1, 1), MergeInfo('right', 1, 1)], pref='right')
+        self.assertEqual(
+            str(result),
+            "N:[e(1)=>[N:[e(1)=>[<0>]]-o-[e(1)=>[<x1>]]]]-o-[e(1)=>[N:[e(0)=>[<x2>]]-o-[e(0)=>[<x3>]]]]"
         )

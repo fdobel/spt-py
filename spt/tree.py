@@ -20,12 +20,22 @@ class _Edge:
 
 
 class _Node:
-    def __init__(self, name=""):
+    def __init__(self, name="", depth=None):
         self._left_edge : _Edge = None
         self._right_edge : _Edge = None
         self.name = name
+        self._depth = depth
+
         if name == "":
             self.name = "o"
+
+    @property
+    def is_leaf(self):
+        return self.left is None and self.left is None
+
+    @property
+    def depth(self):
+        return self._depth
 
     @property
     def left(self) -> _Edge:
@@ -79,10 +89,11 @@ class NodeBuilder:
         pass
 
     def leaf(self, name):
-        return _Node(name=name)
+        return _Node(name=name, depth=0)
 
     def mid(self, left_node, right_node, lw=0, rw=0):
-        n = _Node()
+        depth = max(left_node.depth, right_node.depth) + 1
+        n = _Node(depth=depth)
         n._set_left_edge(_Edge(n, left_node, lw))
         n._set_right_edge(_Edge(n, right_node, rw))
         return n
