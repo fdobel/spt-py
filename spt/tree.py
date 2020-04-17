@@ -1,7 +1,8 @@
+from spt.bfs import bfs_tree
 
 
 class _Edge:
-    def __init__(self, parent, child, weight):
+    def __init__(self, parent, child: "_Node", weight):
         self._parent = parent
         self._child = child
         self._weight = weight
@@ -15,32 +16,41 @@ class _Edge:
         return self._weight
 
     def __str__(self):
-        return "<e-%s->:%s>" %(str(self._weight), str(self._child))
+        return "e(%s)=>[%s]" %(str(self._weight), str(self._child))
 
 
 class _Node:
     def __init__(self, name=""):
-        self._left_edge = None # left_edge
-        self._right_edge = None # right_edge
+        self._left_edge : _Edge = None
+        self._right_edge : _Edge = None
         self.name = name
+        if name == "":
+            self.name = "o"
 
     @property
     def left(self) -> _Edge:
         return self._left_edge
+
     @property
     def right(self) -> _Edge:
         return self._right_edge
   
-    def _set_left_edge(self, left_edge):
+    def _set_left_edge(self, left_edge: _Edge):
         self._left_edge = left_edge
   
-    def _set_right_edge(self, right_edge):
+    def _set_right_edge(self, right_edge: _Edge):
         self._right_edge = right_edge
+
+    def bfs(self):
+        n: _Node
+        print("A")
+        for n in bfs_tree(self):
+            print("Node:", n.name)
 
     def __str__(self):
         if self._left_edge is None and self._right_edge is None:
             return "<%s>" % str(self.name)
-        return "<%s - %s - %s>" % (str(self._left_edge), str(self.name), str(self._right_edge))
+        return "N:[%s]-%s-[%s]" % (str(self._left_edge), str(self.name), str(self._right_edge))
   
     def replace_left_edge(self, new_left: "_Node", new_left_weight: float):
         n = _Node()
@@ -55,6 +65,13 @@ class _Node:
         n._set_right_edge(_Edge(n, new_right, new_right_weight))
         n._set_left_edge(_Edge(n, re.child, re.weight))
         return n
+
+    def _get_nodes_at_depth(self, depth):
+        if depth <= 0:
+            yield self
+        else:
+            for f in self._left_edge.child._get_nodes_at_depth(depth - 1):
+                yield f
 
 
 class NodeBuilder:

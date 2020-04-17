@@ -1,7 +1,5 @@
 from factories import grid_graph
 from run import compute_shortest_paths
-from tree import NodeBuilder
-from shortest_paths import ShortestPathTree
 
 import unittest
 

@@ -1,4 +1,4 @@
-from tree import NodeBuilder
+from spt.tree import NodeBuilder
 from shortest_paths import ShortestPathTree
 
 import unittest
@@ -29,7 +29,7 @@ class Test(unittest.TestCase):
         self.spt2 = ShortestPathTree(self.root2, depth=2)
 
     def test_case_1_output(self):
-        self.assertEqual(str(self.root1), "<<e-0->:<0>> -  - <e-0->:<1>>>")
+        self.assertEqual(str(self.root1), "N:[e(0)=>[<0>]]-o-[e(0)=>[<1>]]")
 
     def test_case_1(self):
         self.assertEqual([a for a in self.spt.find_leaf(0)], ['left'])
@@ -38,4 +38,4 @@ class Test(unittest.TestCase):
         self.assertEqual([a for a in self.spt2.find_leaf(2)], ['right', 'left'])
 
     def test_case_2_output(self):
-        self.assertEqual(str(self.root2), "<<e-0->:<<e-0->:<0>> -  - <e-0->:<1>>>> -  - <e-0->:<<e-0->:<2>> -  - <e-0->:<3>>>>>")
+        self.assertEqual(str(self.root2), "N:[e(0)=>[N:[e(0)=>[<0>]]-o-[e(0)=>[<1>]]]]-o-[e(0)=>[N:[e(0)=>[<2>]]-o-[e(0)=>[<3>]]]]")
