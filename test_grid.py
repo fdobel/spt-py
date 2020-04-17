@@ -7,7 +7,7 @@ import unittest
 class Test(unittest.TestCase):
 
     def setUp(self):
-        self.grid = GridGraph(2, 2)
+        self.grid = GridGraph(2, 2, lambda x, y: 1)
 
     def test_case_1_output(self):
         self.assertEqual([a for a in self.grid], [
