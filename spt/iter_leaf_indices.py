@@ -2,6 +2,7 @@ from spt.tree import NodeBuilder
 
 
 def find_leaf(node, leaf_idx):
+
     if node.depth is None:
         raise RuntimeError("depth is not set")
     mask = 1 << (node.depth - 1)
@@ -24,17 +25,22 @@ def distance_common_ancestor(tree_depth, idx1, idx2):
     return distance_to_common_ancestor
 
 
-def tree_node_to_node(node, leaf_indices):
-    node_path = [node]
+def tree_node_to_node(node, node_path, leaf_indices):
 
-    next_idx = leaf_indices.pop()
+    next_idx = leaf_indices[0]
 
-    lu = node
-    print(lu)
-    for direction in find_leaf(node, next_idx):
+    if len(leaf_indices) > 1:
+        look_forward = leaf_indices[1]
+    else:
+        look_forward = None
 
-        print(direction)
-        # next_node = None
+    lu = node_path[len(node_path) - 1]
+
+    if next_idx >= 1 << node.depth:
+        raise RuntimeError("leaf (%i) does not exist (depth %i)" % (next_idx, node.depth))
+
+    for direction in find_leaf(lu, next_idx):
+        yield direction
         if direction == 'left':
             lu = lu.left.child
             node_path.append(lu)
@@ -43,22 +49,10 @@ def tree_node_to_node(node, leaf_indices):
             lu = lu.right.child
             node_path.append(lu)
 
-        print(lu)
+    if look_forward is not None:
+        dca = distance_common_ancestor(node.depth, next_idx, look_forward)
+        for _ in range(dca):
+            yield "up"
 
-
-
-
-if __name__ == '__main__':
-    b = NodeBuilder()
-
-    m1 = b.mid(
-        b.mid(b.leaf("0"), b.leaf("1")),
-        b.mid(b.leaf("2"), b.leaf("3"))
-    )
-
-    m2 = b.mid(
-        b.mid(b.leaf("x0"), b.leaf("x1")),
-        b.mid(b.leaf("x2"), b.leaf("x3"))
-    )
-    tree_node_to_node(m1, [1])
-
+        for t in tree_node_to_node(node, node_path[:-dca], leaf_indices[1:]):
+            yield t
