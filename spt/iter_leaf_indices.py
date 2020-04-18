@@ -25,11 +25,23 @@ def distance_common_ancestor(tree_depth, idx1, idx2):
 
 
 def walk_tree(node, leaf_indices):
-    return tree_node_to_node(node, [(node, 'root')], leaf_indices)
+    """
+
+    :param node: Root node
+    :param leaf_indices: indices to navigate to.
+    :return:
+    """
+    return nav_tree_node_to_node(node, [(node, 'root')], leaf_indices)
 
 
-def tree_node_to_node(node, node_path, leaf_indices):
+def nav_tree_node_to_node(node, node_path, leaf_indices):
+    """
 
+    :param node:
+    :param node_path:
+    :param leaf_indices:
+    :return: generator of tuples (direction, weight).
+    """
     next_idx = leaf_indices[0]
 
     if len(leaf_indices) > 1:
@@ -38,10 +50,6 @@ def tree_node_to_node(node, node_path, leaf_indices):
         look_forward = None
 
     lu = node_path[len(node_path) - 1][0]
-
-    # print("------")
-    # print(lu)
-    # print()
 
     if next_idx >= 1 << node.depth:
         raise RuntimeError("leaf (%i) does not exist (depth %i)" % (next_idx, node.depth))
@@ -69,11 +77,11 @@ def tree_node_to_node(node, node_path, leaf_indices):
 
             if last_nodes_pointer[1] == 'left':
                 weight = up_node.left.weight
-            else:
+            else:  # right
                 weight = up_node.right.weight
             yield "up", weight
             node_path = node_path[:-1]
             # node_path.append((last_nodes_pointer[0], 'up'))
 
-        for a in tree_node_to_node(node, node_path, leaf_indices[1:]):
+        for a in nav_tree_node_to_node(node, node_path, leaf_indices[1:]):
             yield a

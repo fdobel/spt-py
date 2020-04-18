@@ -8,7 +8,6 @@ class GridGraph:
         self._nodes = [(row, col) for row, col in itertools.product(range(maxrow), range(maxcol))]
         self._maxrow = maxrow
         self._maxcol = maxcol
-        # self._edges = edges
         self._weight_function = weight_function
 
     @property
@@ -78,9 +77,7 @@ class GridGraph:
 
             uws = "| %s \\ %s " % ("{:<6s}".format(str(cw)), "{:<6s}\\".format(str(dw)))
 
-            # print(r, c, uws)
             ws += uws
-
 
             if c >= self._maxcol-1:
                 s += "-o"
@@ -89,10 +86,36 @@ class GridGraph:
         return s
 
 
+class WeightBuilder:
+    def __init__(self):
+        pass
+
+    def build(self):
+        return lambda x, y: 1
+
+
+class GridBuilder:
+    def __init__(self):
+        self._rows = None
+        self._cols = None
+
+        self._weight_builder = WeightBuilder()
+
+    def rows(self, r):
+        self._rows = r
+        return self
+
+    def cols(self, c):
+        self._cols = c
+        return self
+
+    def build(self):
+        weights = self._weight_builder.build()
+        return GridGraph(self._rows, self._cols, weights)
+
 
 def build_grid_graph(rows=3, cols=4):
-    one_foo = lambda x, y: 1
-    return GridGraph(rows, cols, one_foo)
+    return GridBuilder().rows(rows).cols(cols).build()
 
 
 if __name__ == '__main__':

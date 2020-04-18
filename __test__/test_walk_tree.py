@@ -1,4 +1,4 @@
-from spt.iter_leaf_indices import distance_common_ancestor, tree_node_to_node, walk_tree
+from spt.iter_leaf_indices import distance_common_ancestor, nav_tree_node_to_node, walk_tree
 from spt.merge_tree import merge_binary_tree_along_path_to_leaf, MergeInfo
 from spt.tree import NodeBuilder
 
