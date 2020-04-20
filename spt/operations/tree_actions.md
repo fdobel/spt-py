@@ -47,6 +47,7 @@ single node graph SN = ({n}, {})
     SPT_G(S, T) ==> SPT_G(S u {T}, T)
 
 ---
+###### steps
 let ```S = [s_1, ..., s_n]```
 Premises: 
 - T is the last element of ordered source nodes.
@@ -54,23 +55,42 @@ Steps:
 - leaf index of T will be ```n```
 
 
-todo
-
-    C1(R, index) = ... if leaf index is at the right side of R
-    C1(R, index) = ... if leaf index
-    C1(R, index) = ... if leaf index
-    
+    single_node(node, depth):
+        if depth = 0
+            return (node) 
+        return ((single_node(node, depth-1)), None)
+        
+    def C1(R):
+        idx = current minimal leaf idx
+         
+        if 2^depth(R)-1<idx
+            return ((R, 0), single_node(idx, depth(R)))
+        end
+        if idx on left side of R
+            if idx = 0:
+                return replace_left_edge(R, (node, W))
+            return C1( leftChild(R) , idx - 2^(depth(R)-1) )
+        end
+        if idx on right side of R
+            if idx = 1:
+                return ((node, W?), None)
+            C1( rightChild(R) , idx - 2^(depth(R)-1) )
+        end     
    
  
 ###### Construction 2
     SPT_G(S, T) => SPT_G'(S, B)
     with G=(V,E),V'= V u {B}, E'= E u {(T, B)}, G':=(V', E')
- 
- add new node ```B``` and single edge ```e=(T, B)```
+- add new node ```B``` and single edge ```e=(T, B)```
+    
+- ```SPT_G'(S, B)``` from ```SPT_G(S, T)```: add ```w_{T,B}``` to both first children of root node.
 
-    => construction of SPT_G'(S, B) from SPT_G(S, T):
-        - existing shortest path tree, add w_{T,B} to both first children of root node.
-        # todo - proof correctness.
+
+    C2(R, w):
+        ((LC, w1), (RC, w2)) = R
+        return ((LC, w1 + w), (RC, w2 + w))
+###### - todo - proof correctness.
+    
 
 ###### Construction 3
     G=(V, E, w) 
