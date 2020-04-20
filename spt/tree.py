@@ -20,14 +20,20 @@ class _Edge:
 
 
 class _Node:
-    def __init__(self, name="", depth=None):
+    def __init__(self, name="", depth=None, leaf_nodes=None):
         self._left_edge : _Edge = None
         self._right_edge : _Edge = None
         self.name = name
         self._depth = depth
 
+        self._leaf_nodes = leaf_nodes
+
         if name == "":
             self.name = "o"
+
+    @property
+    def leaf_nodes(self):
+        return self._leaf_nodes
 
     @property
     def is_leaf(self):
@@ -89,11 +95,25 @@ class NodeBuilder:
         pass
 
     def leaf(self, name):
-        return _Node(name=name, depth=0)
+        return _Node(name=name, depth=0, leaf_nodes=[name])
+
+    def only_left_child(self, left_node, lw=0):
+        ld = left_node.depth if left_node is not None else 0
+        depth = ld + 1
+        ll = left_node.leaf_nodes if left_node is not None else []
+
+        n = _Node(depth=depth, leaf_nodes=ll)
+        n._set_left_edge(_Edge(n, left_node, lw))
+        return n
 
     def mid(self, left_node, right_node, lw=0, rw=0):
-        depth = max(left_node.depth, right_node.depth) + 1
-        n = _Node(depth=depth)
+        ld = left_node.depth if left_node is not None else 0
+        rd = right_node.depth if right_node is not None else 0
+
+        depth = max(ld, rd) + 1
+        ll = left_node.leaf_nodes if left_node is not None else []
+        rl = right_node.leaf_nodes if right_node is not None else []
+        n = _Node(depth=depth, leaf_nodes=ll + rl)
         n._set_left_edge(_Edge(n, left_node, lw))
         n._set_right_edge(_Edge(n, right_node, rw))
         return n
